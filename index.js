@@ -1,10 +1,18 @@
 const express = require("express");
 const app = express();
-// const http = require("http").Server(app);
-// const io = require("socket.io")(http);
+const http = require("http").Server(app);
+const io = require("socket.io")(http);
+
 const db = require("./mongodb.js");
 
 app.use("/", express.static("public"));
+
+io.on("connection", socket => {
+  console.log("a user connected");
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+});
 
 app.get("/api/new-message", (req, res) => {
   console.log(req.query);
@@ -15,6 +23,7 @@ app.get("/api/new-message", (req, res) => {
     .then(result => {
       console.log("inserted");
       res.send("query added");
+      io.emit("new message", { name: name, message: message });
     })
     .catch(err => {
       console.log(err);
@@ -47,4 +56,4 @@ app.get("/api/delete-message", (req, res) => {
     });
 });
 
-app.listen(3000, () => console.log("Example app listening on port 3000!"));
+http.listen(3000, () => console.log("Example app listening on port 3000!"));

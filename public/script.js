@@ -1,6 +1,7 @@
+let postString = "";
+
 const showMessages = posts => {
   const postsEl = document.querySelector("#posts");
-  let postString = "";
 
   posts.forEach(function(post) {
     postString +=
@@ -32,13 +33,19 @@ const getAndShowMessages = () => {
 //     console.log(error);
 //   });
 getAndShowMessages();
+var socket = io();
 console.log("my script");
+socket.on("new message", post => {
+  const postsEl = document.querySelector("#posts");
+  postString +=
+    "<tr><td>" + post.name + "</td><td>" + post.message + "</td></tr>";
+  postsEl.innerHTML = postString;
+});
 
 const postButtonEl = document.querySelector("#post-button");
 postButtonEl.addEventListener("click", () => {
   post = getFormData();
   postMessage(post.name, post.message);
-  getAndShowMessages();
 });
 
 const deleteButtonEl = document.querySelector("#delete-button");

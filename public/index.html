@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>message tutorial</title>
+</head>
+
+<body>
+    <h1>
+        message board!
+    </h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody id="posts">
+
+        </tbody>
+    </table>
+    <div>
+        <h3>add message</h3>
+        <form>
+            <input id="name" type="text" placeholder="name" />
+            <input id="message" type="text" placeholder="message" />
+            <input id="post-button" type="button" value="Post">
+        </form>
+    </div>
+    <div>
+        <h3>delete message</h3>
+        <form>
+            <input id="delete-name" type="text" placeholder="name" />
+            <input id="delete-button" type="button" value="Delete">
+        </form>
+    </div>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="script.js">
+    </script>
+</body>
+
+</html>

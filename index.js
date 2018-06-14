@@ -46,10 +46,23 @@ app.get("/api/all-messages", (req, res) => {
 
 app.get("/api/delete-message", (req, res) => {
   db
-    .deleteMessage(req.query.name)
+    .deleteMessage(req.query.id)
     .then(result => {
       console.log("deleted");
       res.send("message deleted");
+    })
+    .catch(err => {
+      res.send("error occured");
+    });
+});
+
+app.get("/api/edit-message", (req, res) => {
+  console.log(req.query);
+  db
+    .editMessage(req.query._id, req.query.name, req.query.message)
+    .then(result => {
+      console.log("edited");
+      res.send("message edited");
     })
     .catch(err => {
       res.send("error occured");

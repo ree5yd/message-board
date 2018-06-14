@@ -1,4 +1,5 @@
-const MongoClient = require("mongodb").MongoClient;
+const mongo = require("mongodb");
+const MongoClient = mongo.MongoClient;
 const assert = require("assert");
 
 require("dotenv").config();
@@ -33,16 +34,28 @@ const listMessages = () => {
   return collection.find({}).toArray();
 };
 
-const deleteMessage = name => {
+const deleteMessage = id => {
   const collection = db.collection("message_board");
-  console.log(name);
-  return collection.deleteOne({ name: name }).then(result => {
+  console.log(id);
+  return collection.remove({ _id: id }).then(result => {
     return result;
   });
+};
+
+const editMessage = (id, name, message) => {
+  const collection = db.collection("message_board");
+  console.log(id);
+  let objectId = new mongo.ObjectID(id);
+  return collection
+    .updateOne({ _id: objectId }, { $set: { name: name, message: message } })
+    .then(result => {
+      return result;
+    });
 };
 
 module.exports = {
   addMessage: addMessage,
   listMessages: listMessages,
-  deleteMessage: deleteMessage
+  deleteMessage: deleteMessage,
+  editMessage: editMessage
 };

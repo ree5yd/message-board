@@ -22,7 +22,7 @@ app.get("/api/new-message", (req, res) => {
     .addMessage(name, message)
     .then(result => {
       console.log("inserted");
-      res.send("query added");
+      res.send(result.ops[0]);
       io.emit("new message", { name: name, message: message });
     })
     .catch(err => {

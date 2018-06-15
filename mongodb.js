@@ -36,8 +36,9 @@ const listMessages = () => {
 
 const deleteMessage = id => {
   const collection = db.collection("message_board");
-  console.log(id);
-  return collection.remove({ _id: id }).then(result => {
+  let objectId = new mongo.ObjectID(id);
+  console.log(objectId);
+  return collection.deleteOne({ _id: objectId }).then(result => {
     return result;
   });
 };

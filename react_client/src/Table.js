@@ -1,18 +1,14 @@
 import React, { Component } from "react";
+import { Link, withRouter } from "react-router-dom";
 
 class Table extends Component {
   constructor(props) {
     super(props);
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick(id) {
-    this.props.action(id);
   }
 
   render() {
-    if (this.props.show) {
-      return (
+    return (
+      <div>
         <table>
           <thead>
             <tr>
@@ -23,7 +19,7 @@ class Table extends Component {
           <tbody>
             {this.props.messages.map((element, index) => {
               var onClick = () => {
-                this.handleClick(element._id);
+                this.props.history.push("/edit-message/" + element._id);
               };
               return (
                 <tr id={element._id} key={element._id} onClick={onClick}>
@@ -34,11 +30,12 @@ class Table extends Component {
             })}
           </tbody>
         </table>
-      );
-    } else {
-      return null;
-    }
+        <button>
+          <Link to="/add-message">Add Message</Link>
+        </button>
+      </div>
+    );
   }
 }
 
-export default Table;
+export default withRouter(Table);

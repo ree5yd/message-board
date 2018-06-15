@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Switch, Route, withRouter } from "react-router-dom";
 import logo from "./logo.svg";
 import "./App.css";
 import axios from "axios";
@@ -14,86 +15,53 @@ class App extends Component {
       ],
       title: "hello",
       currentView: "table-view",
-      editId: null,
       errorMessage: null
     };
     this.getMessages();
-
-    this.changeView = this.changeView.bind(this);
-    this.changeToTableView = this.changeToTableView.bind(this);
-    this.changeToNewMessageView = this.changeToNewMessageView.bind(this);
-    this.changeToEditMessageView = this.changeToEditMessageView.bind(this);
     this.addMessage = this.addMessage.bind(this);
     this.editMessage = this.editMessage.bind(this);
-  }
-
-  changeView(newView) {
-    this.setState({ currentView: newView });
-  }
-
-  changeToTableView() {
-    this.changeView("table-view");
-  }
-
-  changeToNewMessageView() {
-    this.changeView("new-message-view");
-  }
-
-  changeToEditMessageView(id) {
-    this.setState({
-      currentView: "edit-message-view",
-      editId: id
-    });
+    this.deleteMessage = this.deleteMessage.bind(this);
   }
 
   render() {
-    let showTable = this.state.currentView === "table-view";
-    let showMessage = this.state.currentView === "new-message-view";
-    let editMessage = this.state.currentView === "edit-message-view";
-    let button = null;
-    if (showTable) {
-      button = (
-        <input
-          type="button"
-          value="new message"
-          onClick={this.changeToNewMessageView}
-        />
-      );
-    } else if (showMessage) {
-      button = (
-        <input type="button" value="table" onClick={this.changeToTableView} />
-      );
-    }
     return (
       <div className="App">
         {this.state.title}
-        <div>
-          {button}
-          {/* <input type="button" value="table" onClick={this.changeToTableView} />
-          <input
-            type="button"
-            value="new message"
-            onClick={this.changeToNewMessageView}
-          /> */}
-        </div>
-        <Table
-          messages={this.state.messages}
-          show={showTable}
-          action={this.changeToEditMessageView}
-        />
-        <MessageForm
-          title="Add Message"
-          action={this.addMessage}
-          show={showMessage}
-          editId={null}
-        />
-        <MessageForm
-          title="Edit Message"
-          action={this.editMessage}
-          show={editMessage}
-          editId={this.state.editId}
-          posts={this.state.messages}
-        />
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={() => (
+              <Table
+                messages={this.state.messages}
+                action={this.switchToEditMessage}
+                navigate={null}
+              />
+            )}
+          />
+          <Route
+            path="/add-message"
+            render={() => (
+              <MessageForm
+                title="Add Message"
+                action={this.addMessage}
+                editId={null}
+              />
+            )}
+          />
+          <Route
+            path="/edit-message/:id"
+            render={props => (
+              <MessageForm
+                title="Edit Message"
+                action={this.editMessage}
+                deleteById={this.deleteMessage}
+                editId={props.match.params.id}
+                posts={this.state.messages}
+              />
+            )}
+          />
+        </Switch>
         <div>{this.state.errorMessage}</div>
       </div>
     );
@@ -109,12 +77,16 @@ class App extends Component {
     axios
       .get("/api/new-message", config)
       .then(response => {
-        console.log(response);
+        this.setState(
+          { messages: [...this.state.messages, response.data] },
+          () => {
+            this.props.history.push("/");
+          }
+        );
       })
       .catch(error => {
         console.log(error);
       });
-    this.setState({ messages: [...this.state.messages, post] });
   }
 
   getMessages() {
@@ -156,11 +128,15 @@ class App extends Component {
           name: post.name,
           message: post.message
         };
-        this.setState({
-          messages: new_msg_state,
-          currentView: "table-view",
-          editId: null
-        });
+        this.setState(
+          {
+            messages: new_msg_state,
+            currentView: "table-view"
+          },
+          () => {
+            this.props.history.push("/");
+          }
+        );
       })
       .catch(error => {
         console.log(error);
@@ -178,6 +154,14 @@ class App extends Component {
       .get("/api/delete-message", config)
       .then(res => {
         console.log(res);
+        const msg_index = this.state.messages.findIndex(el => {
+          return el._id === id;
+        });
+        let new_msg_state = this.state.messages;
+        new_msg_state.splice(msg_index, 1);
+        this.setState({ messages: new_msg_state }, () =>
+          this.props.history.push("/")
+        );
       })
       .catch(err => {
         console.log(err);
@@ -185,4 +169,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withRouter(App);

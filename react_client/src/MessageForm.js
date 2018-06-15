@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link, withRouter } from "react-router-dom";
 
 class MessageForm extends Component {
   constructor(props) {
@@ -13,6 +14,11 @@ class MessageForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleMessageChange = this.handleMessageChange.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+  }
+
+  handleDelete(event) {
+    this.props.deleteById(this.state.editId);
   }
 
   handleSubmit(event) {
@@ -26,32 +32,20 @@ class MessageForm extends Component {
       event.preventDefault();
       return;
     }
-
-    // var posts = this.props.posts;
-    // if (this.state.editId !== null) {
-    //   posts[this.editId] = {
-    //     _id: this.state.editId,
-    //     name: this.state.name,
-    //     message: this.state.message
-    //   };
-    // }
-    // console.log(posts);
-
     this.props.action({
       _id: this.props.editId, // this is null if not editing
       name: this.state.name,
       message: this.state.message
     });
+    this.props.history.push("/");
     event.preventDefault();
   }
 
   handleNameChange(event) {
-    // alert("A name was submitted: " + this.state.value);
     this.setState({ name: event.target.value });
   }
 
   handleMessageChange(event) {
-    // alert("A name was submitted: " + this.state.value);
     this.setState({ message: event.target.value });
   }
 
@@ -75,44 +69,41 @@ class MessageForm extends Component {
   }
 
   render() {
-    // if (this.props.editId !== null) {
-    //   const post = this.props.posts.filter(el => {
-    //     return el._id === this.props.editId;
-    //   })[0];
-    //   this.editId = this.props.posts.indexOf(post);
-    //   this.placeholderName = post.name;
-    //   this.placeholderMessage = post.message;
-    // }
-
-    if (this.props.show) {
-      return (
-        <div>
-          <h3>{this.props.title}</h3>
-          <form onSubmit={this.handleSubmit}>
-            <input
-              key="name"
-              value={this.state.name}
-              type="text"
-              placeholder="name"
-              onChange={this.handleNameChange}
-            />
-            <input
-              key="message"
-              value={this.state.message}
-              type="text"
-              placeholder="message"
-              onChange={this.handleMessageChange}
-            />
-            <input type="submit" value="Submit" />
-          </form>
-          <div>
-            <button type="button"> Back </button>
-          </div>
-        </div>
+    var deleteButton = null;
+    if (this.props.editId !== null) {
+      deleteButton = (
+        <button id="delete" onClick={this.handleDelete}>
+          Delete Message
+        </button>
       );
-    } else {
-      return null;
     }
+
+    return (
+      <div>
+        <h3>{this.props.title}</h3>
+        {deleteButton}
+        <form onSubmit={this.handleSubmit}>
+          <input
+            key="name"
+            value={this.state.name}
+            type="text"
+            placeholder="name"
+            onChange={this.handleNameChange}
+          />
+          <input
+            key="message"
+            value={this.state.message}
+            type="text"
+            placeholder="message"
+            onChange={this.handleMessageChange}
+          />
+          <input type="submit" value="Submit" />
+        </form>
+        <button>
+          <Link to="/">Back</Link>
+        </button>
+      </div>
+    );
   }
 }
 
@@ -122,4 +113,4 @@ class MessageForm extends Component {
 //     }
 // }
 
-export default MessageForm;
+export default withRouter(MessageForm);

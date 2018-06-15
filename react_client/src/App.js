@@ -26,7 +26,9 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        {this.state.title}
+        <div className="title">
+          <h1>{this.state.title}</h1>
+        </div>
         <Switch>
           <Route
             exact

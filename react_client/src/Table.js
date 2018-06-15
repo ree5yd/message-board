@@ -9,7 +9,7 @@ class Table extends Component {
   render() {
     return (
       <div>
-        <table>
+        <table className="table-fill">
           <thead>
             <tr>
               <th>Name</th>
@@ -30,9 +30,11 @@ class Table extends Component {
             })}
           </tbody>
         </table>
-        <button>
-          <Link to="/add-message">Add Message</Link>
-        </button>
+        <div className="button-container">
+          <Link to="/add-message">
+            <button className="button">Add Message</button>
+          </Link>
+        </div>
       </div>
     );
   }

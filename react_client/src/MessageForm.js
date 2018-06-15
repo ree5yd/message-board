@@ -37,7 +37,6 @@ class MessageForm extends Component {
       name: this.state.name,
       message: this.state.message
     });
-    this.props.history.push("/");
     event.preventDefault();
   }
 
@@ -80,28 +79,35 @@ class MessageForm extends Component {
 
     return (
       <div>
-        <h3>{this.props.title}</h3>
-        {deleteButton}
-        <form onSubmit={this.handleSubmit}>
-          <input
-            key="name"
-            value={this.state.name}
-            type="text"
-            placeholder="name"
-            onChange={this.handleNameChange}
-          />
-          <input
-            key="message"
-            value={this.state.message}
-            type="text"
-            placeholder="message"
-            onChange={this.handleMessageChange}
-          />
-          <input type="submit" value="Submit" />
-        </form>
-        <button>
-          <Link to="/">Back</Link>
-        </button>
+        <div className="message-form">
+          <form onSubmit={this.handleSubmit}>
+            <h2>{this.props.title}</h2>
+
+            <input
+              key="name"
+              value={this.state.name}
+              type="text"
+              placeholder="name"
+              onChange={this.handleNameChange}
+            />
+            <input
+              key="message"
+              value={this.state.message}
+              type="text"
+              placeholder="message"
+              onChange={this.handleMessageChange}
+            />
+            <button type="submit" value="Submit">
+              Submit
+            </button>
+          </form>
+        </div>
+        <div className="button-container">
+          {deleteButton}
+          <Link to="/">
+            <button>Back</button>
+          </Link>
+        </div>
       </div>
     );
   }
